@@ -1,4 +1,4 @@
-﻿#ERASE ALL THIS AND PUT XAML BELOW between the @" "@ 
+#ERASE ALL THIS AND PUT XAML BELOW between the @" "@ 
 $inputXML = @"
 <Window x:Class="WpfApp2.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,7 +7,7 @@ $inputXML = @"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp2"
         mc:Ignorable="d"
-        Title="Riverbank User Creator" Width="628" Height="499.667">
+        Title="Riverbank User Creator" Width="914" Height="517">
     <Grid Margin="0,3,3.333,28.333">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
@@ -15,49 +15,52 @@ $inputXML = @"
         </Grid.ColumnDefinitions>
         <TabControl Grid.ColumnSpan="2" Margin="0,69,0,-27.666">
             <TabItem Header="Account">
-                <Grid Background="#FFE5E5E5" Margin="0,0,0,-23.333">
+                <Grid Background="#FFE5E5E5" Margin="-3,0,3,-50.667">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100*"/>
                         <ColumnDefinition Width="36*"/>
                         <ColumnDefinition Width="477*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock HorizontalAlignment="Left" Margin="20,38,0,0" TextWrapping="Wrap" Text="First Name" VerticalAlignment="Top" Height="16" Width="83" Grid.ColumnSpan="2"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="20,75,0,0" TextWrapping="Wrap" Text="Last Name" VerticalAlignment="Top" Height="16" Width="56"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="20,110,0,0" TextWrapping="Wrap" Text="Job Title" VerticalAlignment="Top" Width="83" Height="16" Grid.ColumnSpan="2"/>
+                    <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="301" Margin="20,10,0,0" VerticalAlignment="Top" Width="419" Grid.ColumnSpan="3">
+                        <TextBlock TextWrapping="Wrap" Margin="9,9,353,269"><Run FontWeight="Bold" Text="General"/></TextBlock>
+                    </Border>
+                    <Border BorderBrush="Black" BorderThickness="1" Grid.Column="2" HorizontalAlignment="Left" Height="301" Margin="283.667,10,0,0" VerticalAlignment="Top" Width="391">
+                        <TextBlock TextWrapping="Wrap" Margin="8.667,8.667,336,269"><Run FontWeight="Bold" Text="Groups"/></TextBlock>
+                    </Border>
+                    <TextBlock HorizontalAlignment="Left" Margin="40,53,0,0" TextWrapping="Wrap" Text="First Name" VerticalAlignment="Top" Height="16" Width="83"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="40,90,0,0" TextWrapping="Wrap" Text="Last Name" VerticalAlignment="Top" Height="16" Width="56"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="40,125,0,0" TextWrapping="Wrap" Text="Job Title" VerticalAlignment="Top" Width="83" Height="16"/>
                     <TextBlock HorizontalAlignment="Left" Margin="20,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="16" Width="0"/>
-                    <TextBox x:Name="firstnametext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="29.666,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
-                    <TextBox x:Name="lastnametext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="29.666,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
-                    <TextBox x:Name="Jobtitletext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="29.666,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
+                    <TextBox x:Name="firstnametext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="50,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
+                    <TextBox x:Name="lastnametext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="49.667,90,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
+                    <TextBox x:Name="Jobtitletext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="49.667,125,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
 
-                    <TextBlock HorizontalAlignment="Left" Margin="20,261,0,0" TextWrapping="Wrap" Text="Password" VerticalAlignment="Top" Width="70" Height="23" RenderTransformOrigin="0.569,2.138"/>
-                    <Button x:Name="createuserbutton" Content="Create User" Grid.Column="2" HorizontalAlignment="Left" Margin="330.666,274,0,0" VerticalAlignment="Top" Width="117" Height="20" IsEnabled="True"/>
-                    <TextBlock x:Name="errortext" HorizontalAlignment="Left" Margin="20,299,0,0" TextWrapping="Wrap" Text="ERROR: " VerticalAlignment="Top" Height="65" Width="563" Grid.ColumnSpan="3" FontWeight="Bold" Visibility="Hidden"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="20,144,0,0" TextWrapping="Wrap" Text="Direct Number" VerticalAlignment="Top" Width="93" Grid.ColumnSpan="2"/>
-                    <TextBox x:Name="directnumbertext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="29.666,144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="20,180,0,0" TextWrapping="Wrap" Text="Department" VerticalAlignment="Top" Width="83" Grid.ColumnSpan="2"/>
-                    <TextBox x:Name="departmenttext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="29.666,180,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
-                    <TextBox x:Name="callgrouptext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="29.666,217,0,0" TextWrapping="Wrap" Text="e.g. HR +44 1869 814 275" VerticalAlignment="Top" Width="179"/>
-                    <TextBox x:Name="passwordtext" Grid.Column="2" HorizontalAlignment="Left" Margin="29.666,261,0,0" VerticalAlignment="Top" Width="179" Height="23"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="20,217,0,0" TextWrapping="Wrap" Text="Call Group" VerticalAlignment="Top" Width="70"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Groups">
-                <Grid Background="#FFE5E5E5" Margin="0,-2,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="7*"/>
-                        <ColumnDefinition Width="29*"/>
-                    </Grid.ColumnDefinitions>
-                    <ComboBox x:Name="groupcombobox" HorizontalAlignment="Left" Margin="2.333,55,0,0" VerticalAlignment="Top" Width="216" Height="22" Grid.Column="1"/>
-                    <TextBlock x:Name="selectgrouptext" HorizontalAlignment="Left" Margin="24,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Select Group" Height="16" Width="85"/>
-                    <Button x:Name="addgroupbutton" Content="Add" Grid.Column="1" HorizontalAlignment="Left" Margin="230.333,55,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
-                    <ListBox x:name="addedgroupstextarea" HorizontalAlignment="Left" Height="195" Margin="2.333,96,0,0" VerticalAlignment="Top" Width="216" Grid.Column="1"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="40,276,0,0" TextWrapping="Wrap" Text="Password" VerticalAlignment="Top" Width="70" Height="23" RenderTransformOrigin="0.569,2.138"/>
+
+                    <TextBlock x:Name="errortext" HorizontalAlignment="Left" Margin="20,316,0,0" TextWrapping="Wrap" Text="ERROR: " VerticalAlignment="Top" Height="65" Width="563" Grid.ColumnSpan="3" FontWeight="Bold" Visibility="Hidden"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="40,159,0,0" TextWrapping="Wrap" Text="Direct Number" VerticalAlignment="Top" Width="93"/>
+                    <TextBox x:Name="directnumbertext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="49.667,159,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="40,195,0,0" TextWrapping="Wrap" Text="Department" VerticalAlignment="Top" Width="83"/>
+                    <TextBox x:Name="departmenttext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="49.667,195,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="179"/>
+                    <TextBox x:Name="callgrouptext" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="49.667,232,0,0" TextWrapping="Wrap" Text="e.g. HR: +44 1869 814 275" VerticalAlignment="Top" Width="179"/>
+                    <TextBox x:Name="passwordtext" Grid.Column="2" HorizontalAlignment="Left" Margin="49.667,276,0,0" VerticalAlignment="Top" Width="179" Height="23"/>
+                    <Button x:Name="createuserbutton" Content="Create User" Grid.Column="2" HorizontalAlignment="Left" Margin="557.667,349,0,0" VerticalAlignment="Top" Width="117" Height="20" IsEnabled="True"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="40,232,0,0" TextWrapping="Wrap" Text="Call Group" VerticalAlignment="Top" Width="70"/>
+                    <ListBox x:Name="addedgroupstextarea" HorizontalAlignment="Left" Height="168" Margin="403.667,91,0,0" VerticalAlignment="Top" Width="154" Grid.Column="2"/>
+                    <ComboBox x:Name="groupcombobox" HorizontalAlignment="Left" Margin="403.667,59,0,0" VerticalAlignment="Top" Width="154" Height="22" Grid.Column="2"/>
+                    <TextBlock x:Name="selectgrouptext" HorizontalAlignment="Left" Margin="298.667,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Select Group" Height="16" Width="85" Grid.Column="2" RenderTransformOrigin="0.936,0.597"/>
+                    <Button x:Name="addgroupbutton" Content="Add" Grid.Column="2" HorizontalAlignment="Left" Margin="584.667,65,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
+                    <Button x:Name="removegroupbutton" Content="Remove" Grid.Column="2" HorizontalAlignment="Left" Margin="584.667,98,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
                 </Grid>
             </TabItem>
         </TabControl>
-        <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="54" Margin="10,10,0,0" VerticalAlignment="Top" Width="183" Source="c:\users\greg\desktop\transparent-logo-smalll.png"/>
+        <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="54" Margin="10,10,0,0" VerticalAlignment="Top" Width="183" Source="C:\Users\riverbank.admin\Desktop\Riverbank User Creator\rblogo.png"/>
+        <Image x:Name="oxtsimage" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="71" Margin="767,10,0,0" VerticalAlignment="Top" Width="126" Source="C:\Users\riverbank.admin\Desktop\Riverbank User Creator\oxts.png"/>
 
     </Grid>
 </Window>
+    
+    
 "@        
 
 $inputXML = $inputXML -replace 'mc:Ignorable="d"','' -replace "x:N",'N'  -replace '^<Win.*', '<Window'
@@ -132,18 +135,37 @@ $WPFaddgroupbutton.Add_Click({
 
 })
 
+$WPFremovegroupbutton.Add_Click({
+
+    $WPFaddedgroupstextarea.Items.Remove($WPFaddedgroupstextarea.selectedItem);
+
+})
+
 
 $WPFcreateuserbutton.Add_Click({
 
     
-    ##Resolve Form Settings
+    ##Resolve General Settings
     $hash = Get-FormFields
+
+    
     Try
 	    {
                  
-            New-ADUser @hash  -OtherAttributes @{ipPhone = ($WPFdirectnumbertext.text); proxyAddresses = ("SMTP:" + $WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text+"@oxts.com")} -PassThru -Enabled $true
+            New-ADUser @hash  -OtherAttributes @{c="GB"; ipPhone = ($hash['OfficePhone']); proxyAddresses = ("SMTP:" + $hash['emailaddress'] )} -PassThru -Enabled $true
             
             Invoke-Command -ComputerName OXTS-DC1 -ScriptBlock { Start-ADSyncSyncCycle } -ErrorAction Stop
+
+            ## Connect to MS online and assign license
+            Import-Module MSOnline
+            $pass = Get-Credential
+            $mycred = new-object -typename System.Management.Automation.PSCredential $pass
+            $O365Cred = Get-Credential $mycred
+            Connect-MsolService -Credential $O365Cred
+            
+            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses "OxfordTechnicalSolutions:ENTERPRISEPACK"
+            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses "OxfordTechnicalSolutions:ATP_ENTERPRISE"
+            
             
     	}Catch
 		{
@@ -159,16 +181,24 @@ $WPFcreateuserbutton.Add_Click({
 						
 	    }
 
+    ## Add user to groups
+    
+
+    $User = Get-ADUser -Filter * | Where-Object { ($_.UserPrincipalName -eq ($hash['UserPrincipalName']))  }
+    $groupsText = $WPFaddedgroupstextarea.Items
+     
+    foreach ($Group in $WPFaddedgroupstextarea.Items)
+    {
+        write-host "Adding $SamAccountName to the following group: $Group"
+        $groupDN = get-adgroup $Group |  Select-Object -ExpandProperty  distinguishedname
+        Add-ADGroupMember -Identity $groupDN $hash.item('SamAccountName')
+    }      
+
+
     
     #$Form.Close()
 })
 
-$WPFcreateuserbutton.Add_Click({
-   ##Resolve Form Settings
-    
-    Write-host $WPFdisplayNametext.Text
-
-})
 
 ##Reference Sample entry of how to add data to a field
     ##$vmpicklistView.items.Add([pscustomobject]@{'VMName'=($_).Name;Status=$_.Status;Other="Yes"})
