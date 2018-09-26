@@ -81,9 +81,9 @@ catch{Write-Host "Unable to load Windows.Markup.XamlReader. Double-check syntax 
 $xaml.SelectNodes("//*[@Name]") | %{Set-Variable -Name "WPF$($_.Name)" -Value $Form.FindName($_.Name)}
 
 Function Get-FormVariables{
-if ($global:ReadmeDisplay -ne $true){Write-host "If you need to reference this display again, run Get-FormVariables" -ForegroundColor Yellow;$global:ReadmeDisplay=$true}
-write-host "Found the following interactable elements from our form" -ForegroundColor Cyan
-get-variable WPF*
+    if ($global:ReadmeDisplay -ne $true){Write-host "If you need to reference this display again, run Get-FormVariables" -ForegroundColor Yellow;$global:ReadmeDisplay=$true}
+        write-host "Found the following interactable elements from our form" -ForegroundColor Cyan
+        get-variable WPF*
 }
 
 Get-FormVariables
@@ -104,7 +104,7 @@ function Get-FormFields {
           DisplayName =  $WPFfirstNametext.Text + " " + $WPFlastNametext.Text;
           Description = $WPFJobtitletext.Text;
           SamAccountName = $WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text;
-          UserPrincipalName = $WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text + "@potter.local";
+          UserPrincipalName = $WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text + "@oxts.com";
           Title = $WPFJobtitletext.Text;
           GivenName=$WPFfirstNametext.Text;
           Fax = $WPFcallgrouptext.Text;
@@ -114,20 +114,36 @@ function Get-FormFields {
           Homedirectory = "\\oxts.local\Shares\Users\"+$WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text;
           OfficePhone = $WPFdirectnumbertext.text;
           Company = "Oxford Technical Solutions";
-          emailaddress = $WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text + "@oxts.local";
+          emailaddress = $WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text + "@oxts.com";
           }
     
     $HashArguments
 }
+
+#Setup Logging
+function Write-Log {
+    Param(
+        $Message,
+        $Path = $scriptPath 
+    )
+    write-host $Message
+    function TS {Get-Date -Format 'hh:mm:ss'}
+    "[$(TS)] $Message" | Tee-Object -FilePath $Path -Append | Write-Verbose
+}
+
+$scriptPath = split-path -parent $MyInvocation.MyCommand.Definition 
+$scriptPath = $scriptPath + "\Riverbank User Creator Log.log"
+
+
+#Populate groups drop-down
+$groups = Get-ADGroup -Filter 'GroupCategory -eq "Security"' | sort-object | select name 
+$groups | ForEach-Object {$_.Name} | ForEach-object {$WPFgroupcomboBox.AddChild($_)}
 
 
 $WPFcreateuserbutton.Add_Click({
     (Get-FormFields)
 })
 
-#Populate groups drop-down
-$groups = Get-ADGroup -Filter 'GroupCategory -eq "Security"' | select name 
-$groups | ForEach-Object {$_.Name} | ForEach-object {$WPFgroupcomboBox.AddChild($_)}
 
 $WPFaddgroupbutton.Add_Click({
 
@@ -144,11 +160,14 @@ $WPFremovegroupbutton.Add_Click({
 
 $WPFcreateuserbutton.Add_Click({
 
+
+    Write-Log "Creating User.."
+         
     
     ##Resolve General Settings
     $hash = Get-FormFields
-
-    
+        
+    #Create AD user and sync to 365
     Try
 	    {
                  
@@ -156,17 +175,7 @@ $WPFcreateuserbutton.Add_Click({
             
             Invoke-Command -ComputerName OXTS-DC1 -ScriptBlock { Start-ADSyncSyncCycle } -ErrorAction Stop
 
-            ## Connect to MS online and assign license
-            Import-Module MSOnline
-            $pass = Get-Credential
-            $mycred = new-object -typename System.Management.Automation.PSCredential $pass
-            $O365Cred = Get-Credential $mycred
-            Connect-MsolService -Credential $O365Cred
-            
-            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses "OxfordTechnicalSolutions:ENTERPRISEPACK"
-            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses "OxfordTechnicalSolutions:ATP_ENTERPRISE"
-            
-            
+             
     	}Catch
 		{
 		    $InfoMessage = $_
@@ -177,25 +186,85 @@ $WPFcreateuserbutton.Add_Click({
             }
             
             $WPFerrortext.text = "ERROR:" + $InfoMessage
-			write-host $InfoMessage
+			write-log "Error creating AD user. Error was: " + $InfoMessage
 						
 	    }
 
-    ## Add user to groups
-    
 
+    #Add user to AD security groups
     $User = Get-ADUser -Filter * | Where-Object { ($_.UserPrincipalName -eq ($hash['UserPrincipalName']))  }
     $groupsText = $WPFaddedgroupstextarea.Items
-     
+         
     foreach ($Group in $WPFaddedgroupstextarea.Items)
     {
-        write-host "Adding $SamAccountName to the following group: $Group"
+        Try{
+
+        write-log "Adding $SamAccountName to the following group: $Group"
         $groupDN = get-adgroup $Group |  Select-Object -ExpandProperty  distinguishedname
         Add-ADGroupMember -Identity $groupDN $hash.item('SamAccountName')
-    }      
+
+        }Catch
+        {
+           $InfoMessage = $_
+			$InfoTitle = "Warning"
+            
+            if ($WPFerrortext.Visibility -ne 'Visible'){
+                $WPFerrortext.Visibility = 'Visible'
+            }
+            
+            $WPFerrortext.text = "ERROR:" + $InfoMessage
+			write-log "Error adding AD user to groups. Error was: " + $InfoMessage
+		}
+    }
 
 
+  
+    ## Connect to MS online and assign license
+    Try
+	    {
+            Import-Module MSOnline
+            $pass = Get-Credential
+            $mycred = new-object -typename System.Management.Automation.PSCredential $pass
+            $O365Cred = Get-Credential $mycred
+            Connect-MsolService -Credential $O365Cred
+
+            ##Wait for account to sync to 365 before assigning license
+            $ts = New-TimeSpan -Minutes 2
+							
+            $TermLoop = ((get-date) + $ts).ToString("HH:mm")
+            Do
+            {
+                $DateNow = (Get-date).ToString("HH:mm")
+                write-log 'Pausing for 30 seconds for account to sync to 365'
+                Start-Sleep -Seconds 10
+                write-log '20 seconds remaining'
+                Start-Sleep -Seconds 10
+                write-log '10 seconds remaining'
+                Start-Sleep -Seconds 10
+                write-log 'Done'
+                write-log 'Checking to see if the account has been created, if account is not present will wait another 30 seconds'
+                write-log 'Loop will exit 8 minutes after it began regardless of account creation'
+            }
     
+            Until (((Get-MsolUser -UserPrincipalName $hash['UserPrincipalName'] -ErrorAction SilentlyContinue) -ne $null) -or ($DateNow -eq $TermLoop))
+            
+            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses "OxfordTechnicalSolutions:ENTERPRISEPACK"
+            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses "OxfordTechnicalSolutions:ATP_ENTERPRISE"
+    
+        }Catch
+		{
+		    $InfoMessage = $_
+			$InfoTitle = "Warning"
+            
+            if ($WPFerrortext.Visibility -ne 'Visible'){
+                $WPFerrortext.Visibility = 'Visible'
+            }
+            
+            $WPFerrortext.text = "ERROR:" + $InfoMessage
+			write-log "Error assigning 365 license to user. Error was: " + $InfoMessage
+		
+        }
+ 
     #$Form.Close()
 })
 
@@ -211,8 +280,10 @@ $WPFcreateuserbutton.Add_Click({
 write-host "To show the form, run the following" -ForegroundColor Cyan
 
 function Show-Form{
-$Form.ShowDialog() | out-null
-
+    $Form.ShowDialog() | out-null
 }
 
 Show-Form
+
+
+
