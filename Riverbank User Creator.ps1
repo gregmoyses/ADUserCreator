@@ -55,7 +55,7 @@ $inputXML = @"
             </TabItem>
         </TabControl>
         <Image Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="54" Margin="10,10,0,0" VerticalAlignment="Top" Width="183" Source="C:\Users\riverbank.admin\Desktop\Riverbank User Creator\rblogo.png"/>
-        <Image x:Name="oxtsimage" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="71" Margin="767,10,0,0" VerticalAlignment="Top" Width="126" Source="C:\Users\riverbank.admin\Desktop\Riverbank User Creator\oxts.png"/>
+       
 
     </Grid>
 </Window>
@@ -104,17 +104,17 @@ function Get-FormFields {
           DisplayName =  $WPFfirstNametext.Text + " " + $WPFlastNametext.Text;
           Description = $WPFJobtitletext.Text;
           SamAccountName = $WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text;
-          UserPrincipalName = $WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text + "@oxts.com";
+          
           Title = $WPFJobtitletext.Text;
           GivenName=$WPFfirstNametext.Text;
           Fax = $WPFcallgrouptext.Text;
           SurName = $WPFlastNametext.Text;
           AccountPassword=($WPFpasswordtext.text | ConvertTo-SecureString -AsPlainText -Force);
           Homedrive = "U";
-          Homedirectory = "\\oxts.local\Shares\Users\"+$WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text;
+          
           OfficePhone = $WPFdirectnumbertext.text;
-          Company = "Oxford Technical Solutions";
-          emailaddress = $WPFfirstNametext.Text.SubString(0,1)+ $WPFlastNametext.Text + "@oxts.com";
+          
+          
           }
     
     $HashArguments
@@ -173,7 +173,6 @@ $WPFcreateuserbutton.Add_Click({
                  
             New-ADUser @hash  -OtherAttributes @{c="GB"; ipPhone = ($hash['OfficePhone']); proxyAddresses = ("SMTP:" + $hash['emailaddress'] )} -PassThru -Enabled $true
             
-            Invoke-Command -ComputerName OXTS-DC1 -ScriptBlock { Start-ADSyncSyncCycle } -ErrorAction Stop
 
              
     	}Catch
@@ -248,8 +247,8 @@ $WPFcreateuserbutton.Add_Click({
     
             Until (((Get-MsolUser -UserPrincipalName $hash['UserPrincipalName'] -ErrorAction SilentlyContinue) -ne $null) -or ($DateNow -eq $TermLoop))
             
-            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses "OxfordTechnicalSolutions:ENTERPRISEPACK"
-            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses "OxfordTechnicalSolutions:ATP_ENTERPRISE"
+            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses <LICENSENAME>
+            Set-MsolUserLicense -UserPrincipalName $hash['UserPrincipalName'] -AddLicenses <LICENSENAME>
     
         }Catch
 		{
